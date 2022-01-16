@@ -1,0 +1,49 @@
+version: "3"
+services:
+  api-gateway:
+    build: "./api-gateway"
+    depends_on:
+      - listing-service
+      - user-service
+    ports:
+      - 7000:7000
+    volumes:
+      - ./api-gateway:/opt/app
+
+  listing-service:
+    build: "./listing-service"
+    depends_on:
+      - listing-service-db
+    environment:
+      - DB_URI=mysql://root:password@listing-service-db/db?charset=UTF8
+    ports:
+      - 7100:7100
+    volumes:
+      - ./listing-service:/opt/app
+
+  listing-service-db:
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=db
+    image: mysql:5.7.22
+    ports:
+      - 0.0.0.0:7200:3306
+
+  user-service:
+    build: "./user-service"
+    depends_on:
+      - user-service-db
+    environment:
+      - DB_URI=mysql://root:password@user-service-db/db?charset=UTF8
+    ports:
+      - 7101:7100
+    volumes:
+      - ./user-service:/opt/app
+
+  user-service-db:
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=db
+    image: mysql:5.7.22
+    ports:
+      - 0.0.0.0:7201:3306
