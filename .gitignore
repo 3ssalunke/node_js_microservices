@@ -2,6 +2,5 @@
 **/dist
 **/.cache
 
-/api-gateway
 /classifieds-app
 /listing-service
